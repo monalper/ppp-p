@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="70" height="70" viewBox="0 0 70 70">
+  <defs>
+    <clipPath id="clip-path">
+      <rect y="38" width="44" height="42" fill="none"/>
+    </clipPath>
+  </defs>
+  <g id="favicon" transform="translate(3504 -2206)">
+    <rect id="reddit" width="70" height="70" rx="13" transform="translate(-3504 2206)"/>
+    <g id="Scroll_Group_3" data-name="Scroll Group 3" transform="translate(-3491 2182)" clip-path="url(#clip-path)" style="isolation: isolate">
+      <text id="footer-logo" transform="translate(0 78)" fill="#fff" font-size="88" font-family="TimesNewRomanPS-ItalicMT, Times New Roman" font-style="italic"><tspan x="0" y="0">a</tspan></text>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,192 @@
+:root {
+    --augland-bg-external: #f0f0f0;    /* Sayfa Arka Planı */
+    --augland-bg-card: #e1dfda;         /* Kutu Arka Planı (Referans Görsel Rengi) */
+    --augland-text-main: #333333;       /* Ana Metin Rengi */
+    --augland-text-muted: #666666;      /* Hafifletilmiş Metin Rengi */
+    --augland-accent-red: #ff3333;       /* Vurgu Kırmızısı */
+    --augland-logo-black: #000000;      /* Büyük Logo Rengi */
+    --font-family-body: 'Inter', sans-serif; /* Örnek Sans-serif Yazı Tipi */
+    --max-content-width: 1200px;
+}
+
+/* Genel Footer Konteyneri */
+.augland-footer {
+    font-family: var(--font-family-body);
+    width: 100%;
+    background-color: var(--augland-bg-external);
+    padding: 2rem; /* Ekran kenarından boşluk */
+    box-sizing: border-box;
+}
+
+/* Ana İçerik Kutusu (Kutu Düzeni) */
+.footer-container-card {
+    max-width: var(--max-content-width);
+    margin: 0 auto;
+    background-color: var(--augland-bg-card);
+    border-radius: 20px; /* Köşeleri yuvarlak */
+    padding: 3rem; /* İçerik ve kutu kenarı arası */
+    position: relative; /* Büyük logoyu yerleştirmek için */
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.03); /* Hafif gölge */
+    display: flex;
+    flex-direction: column;
+    gap: 3rem; /* Üst içerik ve logo arası */
+}
+
+/* Üst İçerik Alanı - Grid Düzeni */
+.footer-content-top {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1.5fr 1.5fr; /* Sütun genişlikleri */
+    gap: 2.5rem;
+    align-items: flex-start;
+}
+
+/* Marka Tanıtım Metni */
+.footer-brand-intro p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--augland-text-main);
+    margin: 0;
+    font-weight: 500;
+}
+
+/* Navigasyon Sütunları Temel Ayarlar */
+.footer-nav-column h3 {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--augland-text-muted);
+    margin-bottom: 1.25rem;
+}
+
+.footer-nav-column ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem; /* Linkler arası boşluk */
+}
+
+.footer-nav-column a {
+    text-decoration: none;
+    color: var(--augland-text-main);
+    font-size: 0.95rem;
+    transition: color 0.2s ease;
+}
+
+.footer-nav-column a:hover {
+    color: var(--augland-text-muted);
+}
+
+/* Sosyal Medya Listesi Özel Ayarlar */
+.social-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* İkon/kullanıcı adı arası */
+}
+
+.social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem; /* İkon ve yazı arası */
+}
+
+.social-icon {
+    width: 20px;
+    height: 20px;
+    object-fit: contain;
+}
+
+.social-username {
+    font-size: 0.85rem;
+    color: var(--augland-text-main);
+}
+
+/* Eylem Çağrıları Sütunu */
+.action-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.action-main-link {
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.action-main-link.highlight {
+    color: var(--augland-accent-red); /* Call Augland kırmızısı */
+}
+
+.action-subtext {
+    font-size: 0.8rem;
+    color: var(--augland-text-muted);
+}
+
+/* Büyük Marka Adı (Logo) */
+.footer-large-logo {
+    font-size: 12vw; /* Ekran genişliğine göre büyür */
+    font-weight: 800;
+    color: var(--augland-logo-black);
+    text-align: center;
+    text-transform: lowercase;
+    margin: 0 auto;
+    width: 100%;
+    margin-bottom: -1rem; /* Kutunun alt sınırına yakın */
+    line-height: 1;
+}
+
+/* Alt Kısım (Copyright & Policies) - Kutunun Dışında */
+.footer-bottom-external {
+    max-width: var(--max-content-width);
+    margin: 1.5rem auto 0 auto;
+    padding: 0 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    color: var(--augland-text-muted);
+    font-size: 0.8rem;
+}
+
+.footer-policy-nav {
+    display: flex;
+    gap: 1.5rem;
+    margin-top: 0.7rem;
+}
+
+.policy-link {
+    text-decoration: none;
+    color: var(--augland-text-muted);
+    transition: color 0.2s ease;
+}
+
+.policy-link:hover {
+    color: var(--augland-text-main);
+}
+
+/* Mobil / Küçük Ekranlar İçin Uyumluluk */
+@media (max-width: 900px) {
+    .footer-container-card {
+        padding: 2rem;
+    }
+
+    .footer-content-top {
+        grid-template-columns: 1fr; /* Tüm sütunlar alt alta */
+        gap: 2rem;
+        text-align: center;
+    }
+
+    .social-list {
+        align-items: center; /* Sosyal medyayı ortala */
+    }
+
+    .action-calls {
+        gap: 1.5rem;
+    }
+
+    .footer-large-logo {
+        font-size: 18vw; /* Telefonda daha büyük */
+    }
+}

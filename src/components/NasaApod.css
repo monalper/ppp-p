@@ -1,0 +1,102 @@
+.nasa-apod-container {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+    margin-top: var(--spacing-xl);
+    overflow: hidden;
+    border-radius: 28px;
+    background: linear-gradient(135deg, rgb(34 31 27 / 92%), rgb(19 19 18 / 98%));
+    box-shadow: 0 30px 60px rgb(0 0 0 / 20%);
+}
+
+.nasa-apod-image-wrapper {
+    min-height: 100%;
+    max-width: 100%;
+}
+
+.nasa-apod-media {
+    width: 100%;
+    height: 100%;
+    min-height: 360px;
+    object-fit: cover;
+    display: block;
+}
+
+.nasa-apod-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    /* Dikeyde ortalama */
+    align-items: center;
+    /* YENİ: Yatayda ortalama */
+    gap: 1.5rem;
+    /* Metin grubu ile butonlar arası boşluk optimize edildi */
+    padding: clamp(1.5rem, 3vw, 2.5rem);
+    width: 100%;
+}
+
+/* YENİ: Başlık ve açıklamayı bir arada tutan ve ortalayan yeni sınıf */
+.nasa-apod-text-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* Metinleri kendi içinde yatayda ortalar */
+    text-align: center;
+    /* Satır içi metinleri ortalar */
+    max-width: 52ch;
+    /* Blok olarak maksimum genişlik sınırı */
+    width: 100%;
+}
+
+.nasa-apod-title {
+    font-size: clamp(1.6rem, 2.5vw, 2.2rem);
+    margin-bottom: 0.75rem;
+    /* Açıklama ile arasındaki mesafe */
+    color: var(--heading-color);
+    font-weight: 400;
+    line-height: 1.2;
+}
+
+.nasa-apod-desc {
+    font-size: 0.98rem;
+    line-height: 1.7;
+    color: var(--text-color);
+    margin-bottom: 0;
+}
+
+.nasa-apod-readmore {
+    display: inline-flex;
+    align-items: center;
+    margin-left: 0.45rem;
+    color: var(--heading-color);
+    font-weight: 500;
+}
+
+.nasa-apod-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    /* YENİ: Butonları da yatayda ortalar */
+    gap: 0.75rem;
+    width: 100%;
+}
+
+.nasa-apod-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.8rem 1rem;
+    border-radius: 999px;
+    background: rgb(255 255 255 / 5%);
+    color: var(--heading-color);
+}
+
+@media (max-width: 900px) {
+    .nasa-apod-container {
+        grid-template-columns: 1fr;
+    }
+
+    .nasa-apod-image-wrapper {
+        aspect-ratio: 16 / 10;
+        max-width: 100%;
+    }
+}
