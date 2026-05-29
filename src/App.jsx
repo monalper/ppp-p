@@ -52,56 +52,76 @@ function AppShell() {
 
     return (
         <div className={`app-container ${isAdminEditorRoute ? 'app-container--editor' : ''}`.trim()}>
-            {!isAdminEditorRoute && <Header />}
+            {!isAdminEditorRoute ? (
+                <div className="page-content-wrapper">
+                    <Header />
 
-            <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/blog/:slug" element={<PostDetail mode="published" />} />
-                <Route path="/draft/:slug" element={<PostDetail mode="draft" />} />
+                    <Routes>
+                        <Route path="/" element={<Home />} />
+                        <Route path="/stories/:slug" element={<PostDetail mode="published" />} />
+                        <Route path="/draft/:slug" element={<PostDetail mode="draft" />} />
 
-                <Route path="/admin/login" element={<AdminLogin />} />
-                <Route
-                    path="/admin"
-                    element={(
-                        <ProtectedRoute>
-                            <AdminDashboard />
-                        </ProtectedRoute>
-                    )}
-                />
-                <Route
-                    path="/admin/hero"
-                    element={(
-                        <ProtectedRoute>
-                            <AdminHeroSettings />
-                        </ProtectedRoute>
-                    )}
-                />
-                <Route
-                    path="/admin/add"
-                    element={(
-                        <ProtectedRoute>
-                            <AdminAddEdit />
-                        </ProtectedRoute>
-                    )}
-                />
-                <Route
-                    path="/admin/edit/:id"
-                    element={(
-                        <ProtectedRoute>
-                            <AdminAddEdit />
-                        </ProtectedRoute>
-                    )}
-                />
-            </Routes>
+                        <Route path="/admin/login" element={<AdminLogin />} />
+                        <Route
+                            path="/admin"
+                            element={(
+                                <ProtectedRoute>
+                                    <AdminDashboard />
+                                </ProtectedRoute>
+                            )}
+                        />
+                        <Route
+                            path="/admin/hero"
+                            element={(
+                                <ProtectedRoute>
+                                    <AdminHeroSettings />
+                                </ProtectedRoute>
+                            )}
+                        />
+                        <Route
+                            path="/admin/add"
+                            element={(
+                                <ProtectedRoute>
+                                    <AdminAddEdit />
+                                </ProtectedRoute>
+                            )}
+                        />
+                        <Route
+                            path="/admin/edit/:id"
+                            element={(
+                                <ProtectedRoute>
+                                    <AdminAddEdit />
+                                </ProtectedRoute>
+                            )}
+                        />
+                    </Routes>
+                </div>
+            ) : (
+                <>
+                    <Routes>
+                        <Route path="/admin/add" element={(<ProtectedRoute><AdminAddEdit /></ProtectedRoute>)} />
+                        <Route path="/admin/edit/:id" element={(<ProtectedRoute><AdminAddEdit /></ProtectedRoute>)} />
+                    </Routes>
+                </>
+            )}
 
             {!isAdminEditorRoute && <Footer />}
         </div>
     );
 }
 
+function ScrollToTop() {
+    const { pathname } = useLocation();
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [pathname]);
+    return null;
+}
+
 function App() {
     return (
         <Router>
+            <ScrollToTop />
             <AppShell />
         </Router>
     );

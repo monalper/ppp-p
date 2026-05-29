@@ -15,7 +15,7 @@ export function getPostPath(post) {
         return '/';
     }
 
-    return `${isDraftPost(post) ? '/draft' : '/blog'}/${post.slug}`;
+    return `${isDraftPost(post) ? '/draft' : '/stories'}/${post.slug}`;
 }
 
 export function extractPlainText(html = '') {

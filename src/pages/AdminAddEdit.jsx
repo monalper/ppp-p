@@ -947,7 +947,7 @@ export default function AdminAddEdit() {
                         />
 
                         <div className="admin-editor-route-meta">
-                            <span className="admin-editor-route-meta__prefix">{isDraft ? '/draft/' : '/blog/'}</span>
+                            <span className="admin-editor-route-meta__prefix">{isDraft ? '/draft/' : '/stories/'}</span>
                             <input
                                 type="text"
                                 value={slug}

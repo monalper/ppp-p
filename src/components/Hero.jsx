@@ -15,9 +15,10 @@ export default function Hero() {
                 .single();
 
             if (settings && settings.post_id) {
+                // Sorguya created_at ve author alanlarını ekledik
                 const { data: post } = await supabase
                     .from('posts')
-                    .select('title, slug, cover_image')
+                    .select('title, slug, cover_image, created_at, author')
                     .eq('id', settings.post_id)
                     .single();
 
@@ -35,91 +36,165 @@ export default function Hero() {
 
     if (loading || !heroData) return null;
 
-    const positionClass = `hero-pos-${heroData.title_position}`;
+    // Tarihi daha okunabilir (GG.AA.YYYY) formatına getirmek için
+    const formattedDate = heroData.created_at
+        ? new Date(heroData.created_at).toLocaleDateString('tr-TR', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        })
+        : '-';
 
     return (
-        <Link to={`/blog/${heroData.slug}`} className={`home-hero ${positionClass}`}>
+        <Link to={`/stories/${heroData.slug}`} className="home-hero">
             <style>{`
                 .home-hero {
-                    position: relative;
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
                     width: 100%;
-                    aspect-ratio: 16 / 9;
-                    min-height: 420px;
-                    max-height: 650px;
-                    border-radius: 24px;
+                    min-height: 520px;
+                    border: 4px solid #111212;
+                    text-decoration: none;
+                    color: #111212;
                     overflow: hidden;
-                    margin-bottom: var(--spacing-xl);
+                    margin-bottom: 6rem;
+                    transition: opacity 0.3s ease;
+                }
+
+                .home-hero:hover {
+                    opacity: 1;
+                }
+
+                .home-hero-left {
                     display: flex;
-                    text-decoration: none; /* Link alt çizgisini kaldırmak için */
+                    flex-direction: column;
+                    justify-content: space-between;
+                    border-right: 4px solid #111212;
+                    padding: 0;
                 }
 
-                .hero-bg {
-                    position: absolute;
-                    inset: 0;
-                    width: 100%;
-                    height: 100%;
-                    object-fit: cover;
-                    z-index: 1;
-                    
-                }
-
-                .hero-overlay {
-                    position: absolute;
-                    inset: 0;
-                    z-index: 2;
-                    pointer-events: none;
-                }
-
-                .hero-content {
-                    position: relative;
-                    z-index: 3;
-                    width: 100%;
+                .home-hero-title-area {
                     padding: clamp(2rem, 4vw, 4rem);
                     display: flex;
                     flex-direction: column;
-                    max-width: 850px;
-                    height: 100%;
-                    box-sizing: border-box;
+                    justify-content: center;
+                    flex: 1;
+                    gap: 1.5rem;
                 }
 
-                /* Konuma Göre Lokal Arka Plan Gradyanları */
-                .hero-pos-top-left, .hero-pos-center-left, .hero-pos-bottom-left {
-                    background: linear-gradient(to right, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0) 100%);
-                }
-                .hero-pos-top-left .hero-content { justify-content: flex-start; align-items: flex-start; text-align: left; margin-right: auto; }
-                .hero-pos-center-left .hero-content { justify-content: center; align-items: flex-start; text-align: left; margin-right: auto; }
-                .hero-pos-bottom-left .hero-content { justify-content: flex-end; align-items: flex-start; text-align: left; margin-right: auto; }
-                
-                .hero-pos-top-center, .hero-pos-center, .hero-pos-bottom-center {
-                    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.75) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0.75) 100%);
-                }
-                .hero-pos-top-center .hero-content { justify-content: flex-start; align-items: center; text-align: center; margin: 0 auto; }
-                .hero-pos-center .hero-content { justify-content: center; align-items: center; text-align: center; margin: 0 auto; }
-                .hero-pos-bottom-center .hero-content { justify-content: flex-end; align-items: center; text-align: center; margin: 0 auto; }
-                
-                .hero-pos-top-right, .hero-pos-center-right, .hero-pos-bottom-right {
-                    background: linear-gradient(to left, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.4) 50%, rgba(0, 0, 0, 0) 100%);
-                }
-                .hero-pos-top-right .hero-content { justify-content: flex-start; align-items: flex-end; text-align: right; margin-left: auto; }
-                .hero-pos-center-right .hero-content { justify-content: center; align-items: flex-end; text-align: right; margin-left: auto; }
-                .hero-pos-bottom-right .hero-content { justify-content: flex-end; align-items: flex-end; text-align: right; margin-left: auto; }
-
-                /* Bold Başlık Ayarı */
-                .hero-title {
-                    font-size: clamp(1.6rem, 3.2vw, 2.6rem);
-                    color: #ffffff;
-                    font-family: var(--font-heading), Georgia, serif;
-                    font-weight: 700;
-                    line-height: 1.25;
-                    text-wrap: balance;
+                .home-hero-title {
+                    font-family: 'Geist', sans-serif;
+                    font-size: clamp(2.5rem, 5vw, 4.5rem);
+                    font-weight: 500;
+                    line-height: 0.9;
+                    letter-spacing: -0.05em;
+                    text-transform: lowercase;
                     margin: 0;
+                    color: #111212;
+                    word-break: break-word;
+                    font-feature-settings: 'ss01' on, 'ss02' on;
+                }
+
+                .home-hero-meta {
+                    display: flex;
+                    border-top: 4px solid #111212;
+                }
+
+                .home-hero-meta-cell {
+                    flex: 1;
+                    padding: 1.25rem clamp(1rem, 2vw, 2rem);
+                    display: flex;
+                    flex-direction: column;
+                    gap: 0.35rem;
+                    border-right: 4px solid #111212;
+                }
+
+                .home-hero-meta-cell:last-child {
+                    border-right: none;
+                }
+
+                .home-hero-meta-label {
+                    font-size: 0.6rem;
+                    text-transform: uppercase;
+                    letter-spacing: 0.15em;
+                    opacity: 0.45;
+                    font-family: 'Geist', sans-serif;
+                    font-weight: 500;
+                }
+
+                .home-hero-meta-value {
+                    font-size: 0.85rem;
+                    font-family: 'Geist', sans-serif;
+                    font-weight: 600;
                     letter-spacing: -0.01em;
+                    color: #111212;
+                }
+
+                .home-hero-right {
+                    position: relative;
+                    overflow: hidden;
+                    background-color: #111212;
+                }
+
+                .home-hero-image {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                    display: block;
+                    mix-blend-mode: luminosity;
+                    opacity: 0.85;
+                    transition: mix-blend-mode 0.5s ease, opacity 0.5s ease;
+                }
+
+                .home-hero:hover .home-hero-image {
+                    mix-blend-mode: normal;
+                    opacity: 1;
+                }
+
+                /* Responsive */
+                @media (max-width: 768px) {
+                    .home-hero {
+                        grid-template-columns: 1fr;
+                        min-height: auto;
+                    }
+
+                    .home-hero-left {
+                        border-right: none;
+                        border-bottom: 4px solid #111212;
+                    }
+
+                    .home-hero-right {
+                        min-height: 300px;
+                    }
+
+                    .home-hero-title {
+                        font-size: 2.2rem;
+                    }
+
+                    .home-hero-meta-cell {
+                        padding: 1rem;
+                    }
                 }
             `}</style>
-            <img src={heroData.cover_image} alt={heroData.title} className="hero-bg" />
-            <div className="hero-overlay"></div>
-            <div className="hero-content">
-                <h1 className="hero-title">{heroData.title}</h1>
+
+            <div className="home-hero-left">
+                <div className="home-hero-title-area">
+                    <h1 className="home-hero-title">{heroData.title}</h1>
+                </div>
+                <div className="home-hero-meta">
+                    <div className="home-hero-meta-cell">
+                        <span className="home-hero-meta-label">Yayınlanma Tarihi</span>
+                        <span className="home-hero-meta-value">{formattedDate}</span>
+                    </div>
+                    <div className="home-hero-meta-cell">
+                        <span className="home-hero-meta-label">Yazar</span>
+                        <span className="home-hero-meta-value">{heroData.author || 'Bilinmiyor'}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div className="home-hero-right">
+                <img src={heroData.cover_image} alt={heroData.title} className="home-hero-image" />
             </div>
         </Link>
     );

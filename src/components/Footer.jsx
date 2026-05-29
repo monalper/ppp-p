@@ -1,22 +1,12 @@
 import { Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 
-// WMO Hava Durumu Kodu Türkçe Açıklamaları
 const weatherDescriptions = {
-    0: 'Açık gökyüzü', 1: 'Çoğunlukla açık', 2: 'Parçalı bulutlu', 3: 'Kapalı',
-    45: 'Sis', 48: 'Kırağı sisi', 51: 'Hafif çiseleme', 53: 'Orta şiddette çiseleme',
-    55: 'Yoğun çiseleme', 61: 'Hafif yağmurlu', 63: 'Orta şiddette yağmurlu',
-    65: 'Şiddetli yağmurlu', 71: 'Hafif kar yağışlı', 73: 'Orta şiddette kar yağışlı',
-    75: 'Yoğun kar yağışlı', 80: 'Hafif sağanak', 81: 'Orta şiddette sağanak',
-    82: 'Şiddetli sağanak', 95: 'Gök gürültülü fırtına', 96: 'Dolu yağışlı fırtına',
-    99: 'Ağır dolu yağışlı fırtına',
-};
-
-const weatherIcons = {
-    0: '☀️', 1: '🌤️', 2: '⛅', 3: '☁️', 45: '🌫️', 48: '🌫️',
-    51: '🌦️', 53: '🌦️', 55: '🌧️', 61: '🌧️', 63: '🌧️', 65: '🌧️',
-    71: '🌨️', 73: '🌨️', 75: '❄️', 80: '🌦️', 81: '🌧️', 82: '⛈️',
-    95: '⛈️', 96: '⛈️', 99: '⛈️',
+    0: 'Clear', 1: 'Mostly Clear', 2: 'Partly Cloudy', 3: 'Overcast',
+    45: 'Fog', 48: 'Freezing Fog', 51: 'Light Drizzle', 53: 'Moderate Drizzle',
+    55: 'Dense Drizzle', 61: 'Light Rain', 63: 'Moderate Rain', 65: 'Heavy Rain',
+    71: 'Light Snow', 73: 'Moderate Snow', 75: 'Heavy Snow', 80: 'Light Showers',
+    81: 'Moderate Showers', 82: 'Heavy Showers', 95: 'Thunderstorm',
 };
 
 export default function Footer() {
@@ -36,256 +26,191 @@ export default function Footer() {
             .catch(() => { });
     }, []);
 
-    const weatherDesc = weather ? (weatherDescriptions[weather.code] || 'Bilinmiyor') : '';
-    const weatherIcon = weather ? (weatherIcons[weather.code] || '🌡️') : '';
+    const weatherDesc = weather ? (weatherDescriptions[weather.code] || '') : '';
 
     return (
-        <footer className="site-footer">
+        <footer className="museum-footer">
             <style>{`
-                /* ================================================
-                   DYNAMIC ISLAND STYLE FLOATING FOOTER
-                   ================================================ */
-                .site-footer {
-                    margin-top: 6rem; /* Üstteki içerik alanıyla karışmaması için güvenli boşluk */
+                .museum-footer {
                     width: 100%;
-                    padding: 0 1.5rem 1.5rem 1.5rem; /* Her kenardan "bir parmak" boşluk */
+                    background-color: #EFEEEC;
+                    color: #111212;
+                    font-family: 'Geist', sans-serif;
+                    position: relative;
+                    z-index: 10;
+                    box-sizing: border-box;
+                    /* Üstteki grid ile kenetlenmesi için 4px border ve negatif margin */
+                    border: 4px solid #111212;
+                    margin-top: -4px;
+                }
+
+                .footer-grid-top {
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    position: relative;
+                    z-index: 2;
+                }
+
+                @media (max-width: 768px) {
+                    .footer-grid-top {
+                        grid-template-columns: 1fr;
+                    }
+                }
+
+                .footer-column {
+                    display: flex;
+                    flex-direction: column;
+                    padding: 3rem;
+                    border-right: 4px solid #111212;
+                    border-bottom: 4px solid #111212;
+                    margin-right: -4px;
                     box-sizing: border-box;
                 }
 
-                /* Sayfa yapısı flex ise footer'ı en alta itmeye devam etmesi için destek */
-                @supports (display: flex) {
-                    :global(body), :global(#root) {
-                        display: flex;
-                        flex-direction: column;
-                        min-height: 100vh;
+                .footer-column:last-child {
+                    border-right: none;
+                    margin-right: 0;
+                }
+
+                @media (max-width: 768px) {
+                    .footer-column {
+                        border-right: none;
+                        margin-right: 0;
+                        padding: 2rem 1.5rem;
                     }
                 }
 
-                /* Dinamik Ada Görünümlü Ana Gövde */
-                .footer-island {
-                    max-width: var(--max-width, 1400px);
-                    margin: 0 auto;
-                    background-color: var(--muted-box, #0d0d0d); /* Mat, asil ada siyahı */
-                    color: var(--text-color, #f5f5f7);
-                    font-family: var(--font-body), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-                    border-radius: 28px; /* Dynamic Island tarzı yüksek kavis */
-                    padding: 4rem 3rem 2.5rem 3rem;
-                    border: 1px solid rgba(255, 255, 255, 0.06);
-                }
-
-                /* Üst Grid Yapısı */
-                .footer-main-grid {
-                    display: grid;
-                    grid-template-columns: 1.6fr 1fr 1fr;
-                    gap: 4rem;
-                    padding-bottom: 3.5rem;
-                }
-
-                @media (max-width: 968px) {
-                    .footer-main-grid {
-                        grid-template-columns: 1fr;
-                        gap: 2.5rem;
-                        padding-bottom: 2.5rem;
-                    }
-                    .site-footer {
-                        margin-top: 4rem; /* Mobil ekranlar için biraz daha dengeli bir boşluk */
-                    }
-                }
-
-                /* Manifesto Alanı */
-                .footer-manifesto {
-                    font-size: 1.5rem;
-                    line-height: 1.4;
-                    font-weight: 400;
-                    color: var(--heading-color, #ffffff);
-                    max-width: 460px;
-                    margin: 0;
+                .footer-col-title {
+                    font-size: 0.85rem;
                     letter-spacing: -0.02em;
+                    text-transform: lowercase;
+                    font-weight: 600;
+                    margin-bottom: 1.5rem;
                 }
 
-                /* Dikey Link Listeleri */
-                .footer-links-list {
-                    list-style: none;
-                    padding: 0;
-                    margin: 0;
+                .footer-nav {
                     display: flex;
                     flex-direction: column;
-                    gap: 1rem;
+                    gap: 0.5rem;
                 }
 
-                /* Akıcı Link Hover Animasyonu */
-                .footer-link-item {
-                    position: relative;
-                    display: inline-flex;
-                    align-items: center;
-                    color: rgba(255, 255, 255, 0.65);
+                .footer-link {
+                    color: #111212;
                     text-decoration: none;
-                    font-size: 1.1rem;
-                    font-weight: 400;
-                    transition: color 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+                    font-size: 1.25rem;
+                    line-height: 1.2;
+                    font-weight: 500;
                     width: fit-content;
+                    text-transform: lowercase;
                 }
 
-                .footer-link-item::after {
-                    content: '';
-                    position: absolute;
-                    bottom: -4px;
-                    left: 0;
-                    width: 100%;
-                    height: 1px;
-                    background-color: var(--heading-color, #ffffff);
-                    transform: scaleX(0);
-                    transform-origin: right;
-                    transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+                /* Hover opaklık düşürme efekti kaldırıldı, net görünüm korundu */
+                .footer-link:hover {
+                    text-decoration: underline;
+                    text-decoration-thickness: 2px;
                 }
 
-                .footer-link-item:hover {
-                    color: var(--heading-color, #ffffff);
+                .footer-manifesto-text {
+                    font-size: 1.75rem;
+                    line-height: 1.1;
+                    font-weight: 500;
+                    letter-spacing: -0.04em;
+                    margin: 0;
+                    text-transform: lowercase;
                 }
 
-                .footer-link-item:hover::after {
-                    transform: scaleX(1);
-                    transform-origin: left;
-                }
-
-                /* Sosyal Medya İkon Alanı */
-                .footer-social-link {
-                    display: flex;
-                    align-items: center;
-                    gap: 0.75rem;
-                }
-
-                .footer-social-link img {
-                    width: 18px;
-                    height: 18px;
-                    object-fit: contain;
-                    opacity: 0.6;
-                    transition: opacity 0.3s, transform 0.3s;
-                }
-
-                .footer-social-link:hover img {
-                    opacity: 1;
-                    transform: scale(1.1);
-                }
-
-                /* Alt İnce Bilgi Barı */
-                .footer-meta-bar {
-                    border-top: 1px solid rgba(255, 255, 255, 0.06);
-                    padding-top: 2rem;
+                .footer-bottom {
+                    padding: 2rem 3rem;
                     display: flex;
                     justify-content: space-between;
                     align-items: center;
-                    font-size: 0.8rem;
-                    color: rgba(255, 255, 255, 0.4);
+                    position: relative;
+                    z-index: 2;
+                    box-sizing: border-box;
                 }
 
                 @media (max-width: 768px) {
-                    .footer-meta-bar {
-                        flex-direction: column;
-                        gap: 1.5rem;
+                    .footer-bottom {
+                        flex-direction: column-reverse;
                         align-items: flex-start;
+                        gap: 1.5rem;
+                        padding: 1.5rem;
                     }
                 }
 
-                .footer-meta-left {
+                .footer-legal {
                     display: flex;
                     align-items: center;
-                    gap: 2rem;
+                    gap: 1.5rem;
                     flex-wrap: wrap;
+                    font-size: 0.85rem;
+                    text-transform: lowercase;
+                    font-weight: 500;
                 }
 
-                @media (max-width: 768px) {
-                    .footer-meta-left {
-                        gap: 1rem;
-                    }
-                }
-
-                .footer-meta-link {
-                    color: rgba(255, 255, 255, 0.4);
+                .footer-legal-link {
+                    color: inherit;
                     text-decoration: none;
-                    transition: color 0.3s;
+                }
+                
+                .footer-legal-link:hover {
+                    text-decoration: underline;
                 }
 
-                .footer-meta-link:hover {
-                    color: #ffffff;
-                }
-
-                /* Kutusu Kaldırılmış Saf Metin Hava Durumu */
-                .footer-weather-text {
+                .weather-station {
+                    font-size: 0.85rem;
+                    text-transform: lowercase;
+                    font-weight: 500;
                     display: flex;
                     align-items: center;
                     gap: 0.5rem;
-                    color: rgba(255, 255, 255, 0.5);
-                    font-size: 0.8rem;
                 }
             `}</style>
 
-            <div className="footer-island">
-
-                {/* Ana Link ve İçerik Gridi */}
-                <div className="footer-main-grid">
-
-                    {/* Manifesto Bölümü */}
-                    <div>
-                        <p className="footer-manifesto">
-                            Felsefi düşünce, derinlemesine analizler ve bilimsel merak için bir sığınak.
-                            Zihni genişleten dijital deneyimler tasarlıyoruz.
-                        </p>
-                    </div>
-
-                    {/* Navigasyon Bölümü */}
-                    <div>
-                        <ul className="footer-links-list">
-                            <li><Link to="/" className="footer-link-item">Denemeler</Link></li>
-                            <li><Link to="/" className="footer-link-item">Uzay &amp; Bilim</Link></li>
-                            <li><Link to="/" className="footer-link-item">Kültür</Link></li>
-                            <li><Link to="/" className="footer-link-item">Felsefe</Link></li>
-                        </ul>
-                    </div>
-
-                    {/* Sosyal Medya Bölümü */}
-                    <div>
-                        <ul className="footer-links-list">
-                            <li>
-                                <a href="https://bsky.app" target="_blank" rel="noopener noreferrer" className="footer-link-item footer-social-link">
-                                    <img src="/social/Bluesky.svg" alt="" />
-                                    <span>Bluesky</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="footer-link-item footer-social-link">
-                                    <img src="/social/X.svg" alt="" />
-                                    <span>Twitter</span>
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
-
+            <div className="footer-grid-top">
+                <div className="footer-column">
+                    <p className="footer-manifesto-text">
+                        a sanctuary for philosophical thought, deep analysis, and scientific curiosity. we design mind-expanding digital experiences.
+                    </p>
                 </div>
 
-                {/* Alt Kısım: Yasallar, Telif & Hava Durumu */}
-                <div className="footer-meta-bar">
-                    <div className="footer-meta-left">
-                        <span>&copy; 2026 The Augland.</span>
-                        <Link to="/" className="footer-meta-link">Gizlilik Politikası</Link>
-                        <Link to="/" className="footer-meta-link">Kullanım Şartları</Link>
-                        <Link to="/" className="footer-meta-link">Çerez Politikası</Link>
+                <div className="footer-column" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '2rem' }}>
+                    <div>
+                        <div className="footer-col-title">// index</div>
+                        <nav className="footer-nav">
+                            <Link to="/" className="footer-link">Essays</Link>
+                            <Link to="/" className="footer-link">Space & Science</Link>
+                            <Link to="/" className="footer-link">Culture</Link>
+                            <Link to="/" className="footer-link">Philosophy</Link>
+                        </nav>
                     </div>
 
-                    <div className="footer-meta-right">
-                        <div className="footer-weather-text">
-                            {weather ? (
-                                <>
-                                    <span>{weatherIcon}</span>
-                                    <span>Ankara {weather.temp}°C, {weatherDesc}</span>
-                                </>
-                            ) : (
-                                <span>Ankara ...</span>
-                            )}
-                        </div>
+                    <div>
+                        <div className="footer-col-title">// connect</div>
+                        <nav className="footer-nav">
+                            <a href="https://bsky.app" target="_blank" rel="noopener noreferrer" className="footer-link">Bluesky</a>
+                            <a href="https://x.com" target="_blank" rel="noopener noreferrer" className="footer-link">Twitter</a>
+                            <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="footer-link">Github</a>
+                        </nav>
                     </div>
                 </div>
+            </div>
 
+            <div className="footer-bottom">
+                <div className="footer-legal">
+                    <span>&copy; {new Date().getFullYear()} the augland</span>
+                    <Link to="/" className="footer-legal-link">privacy</Link>
+                    <Link to="/" className="footer-legal-link">terms</Link>
+                    <Link to="/" className="footer-legal-link">cookies</Link>
+                </div>
+
+                <div className="weather-station">
+                    {weather ? (
+                        <span>ankara, {weather.temp}°c — {weatherDesc.toLowerCase()}</span>
+                    ) : (
+                        <span>ankara, station offline</span>
+                    )}
+                </div>
             </div>
         </footer>
     );

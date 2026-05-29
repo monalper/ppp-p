@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import PostCard from '../components/PostCard';
 import { estimateReadingTime } from '../lib/postUtils';
+import { PostDetailSkeleton } from '../components/SkeletonLoader';
 import './PostDetail.css';
 
 function TocItem({ item, scrollToHeading, activeId }) {
@@ -27,9 +28,9 @@ function TocItem({ item, scrollToHeading, activeId }) {
                             setIsOpen((open) => !open);
                         }}
                         className="toc-toggle-btn"
-                        aria-label="Toggle subsection"
+                        aria-label="Alt başlıkları aç/kapat"
                     >
-                        {isExpanded ? '-' : '+'}
+                        {isExpanded ? '−' : '+'}
                     </button>
                 </div>
 
@@ -72,7 +73,6 @@ export default function PostDetail({ mode = 'published' }) {
     const [contentHtml, setContentHtml] = useState('');
     const [activeId, setActiveId] = useState('');
     const [relatedPosts, setRelatedPosts] = useState([]);
-
 
     const isDraftView = mode === 'draft';
 
@@ -150,7 +150,7 @@ export default function PostDetail({ mode = 'published' }) {
         });
 
         const timeoutId = window.setTimeout(() => {
-            const headings = document.querySelectorAll('.article-content h2, .article-content h3');
+            const headings = document.querySelectorAll('.museum-article-content h2, .museum-article-content h3');
             headings.forEach((heading) => observer.observe(heading));
         }, 100);
 
@@ -159,8 +159,6 @@ export default function PostDetail({ mode = 'published' }) {
             observer.disconnect();
         };
     }, [contentHtml]);
-
-
 
     useEffect(() => {
         let isMounted = true;
@@ -184,9 +182,7 @@ export default function PostDetail({ mode = 'published' }) {
 
             const { data, error } = await query.single();
 
-            if (!isMounted) {
-                return;
-            }
+            if (!isMounted) return;
 
             if (error || !data) {
                 setPost(null);
@@ -209,9 +205,7 @@ export default function PostDetail({ mode = 'published' }) {
 
             const { data: related } = await relatedQuery;
 
-            if (!isMounted) {
-                return;
-            }
+            if (!isMounted) return;
 
             if (related?.length) {
                 const shuffled = [...related].sort(() => 0.5 - Math.random());
@@ -232,7 +226,7 @@ export default function PostDetail({ mode = 'published' }) {
     }, [isDraftView, slug]);
 
     if (loading) {
-        return <main className="main-content">Deneme yükleniyor..</main>;
+        return <PostDetailSkeleton />;
     }
 
     if (!post) {
@@ -240,77 +234,94 @@ export default function PostDetail({ mode = 'published' }) {
     }
 
     const displayDate = new Date(post.published_at || post.created_at).toLocaleDateString('en-US', {
-        month: 'long',
+        month: 'short',
         day: 'numeric',
         year: 'numeric'
     });
     const readingTime = estimateReadingTime(post.content);
-    const articleMeta = `${displayDate} | ${readingTime} dk okuma`;
 
     return (
-        <main className="main-content">
-            <header className="article-page-header">
-                <span className="article-page-meta-mobile">{articleMeta}</span>
+        <div className="museum-post-page avant-garde-theme">
+
+            {/* AVANT-GARDE HERO SECTION */}
+            <header className="ag-hero-section">
+                <div className="ag-hero-grid">
+
+                    {/* Left Column: Title & Meta */}
+                    <div className="ag-hero-left">
+                        <div className="ag-title-container">
+                            <h1 className="ag-title">{post.title}</h1>
+                        </div>
+
+                        <div className="ag-meta-grid">
+                            <div className="ag-meta-cell">
+                                <span className="ag-meta-label">Yazar</span>
+                                <strong className="ag-meta-value">{post.author || 'A. Ercan'}</strong>
+                            </div>
+                            <div className="ag-meta-cell">
+                                <span className="ag-meta-label">Yayınlanma</span>
+                                <strong className="ag-meta-value">{displayDate}</strong>
+                            </div>
+                            <div className="ag-meta-cell">
+                                <span className="ag-meta-label">Okuma Süresi</span>
+                                <strong className="ag-meta-value">{readingTime} dakika</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Column: Cover Image (if exists) */}
+                    {post.cover_image && (
+                        <div className="ag-hero-right">
+                            <img src={post.cover_image} alt={post.title} className="ag-cover-image" />
+                        </div>
+                    )}
+                </div>
             </header>
 
-            <div className="article-page-layout">
-                <aside
-                    ref={tocRef}
-                    className="article-toc"
-                >
-                    <div className="toc-sticky">
-                        <h1 className="toc-sticky-title">{post.title}</h1>
-                        <header className="toc-header">
-                            <div className="article-date toc-article-date">{articleMeta}</div>
-                        </header>
-
-                        {toc.length > 0 && (
-                            <ul>
-                                {toc.map((item) => (
-                                    <TocItem
-                                        key={item.id}
-                                        item={item}
-                                        scrollToHeading={scrollToHeading}
-                                        activeId={activeId}
-                                    />
-                                ))}
-                            </ul>
-                        )}
-                    </div>
-                </aside>
-
-                <article className="article-layout">
-                    {post.cover_image && (
-                        <div className="article-cover-section">
-                            <div className="article-cover-wrapper">
-                                <img src={post.cover_image} alt={post.title} className="article-cover-img" />
-                            </div>
-
-                            {post.cover_image_source && (
-                                <div className="article-cover-source">
-                                    {post.cover_image_source}
+            {/* CONTENT LAYOUT */}
+            <main className="museum-main">
+                <div className="museum-layout">
+                    {/* SOL SÜTUN */}
+                    <aside ref={tocRef} className="museum-toc">
+                        <div className="toc-sticky">
+                            {toc.length > 0 && (
+                                <div>
+                                    <span className="toc-sticky-nav-title">Index</span>
+                                    <ul>
+                                        {toc.map((item) => (
+                                            <TocItem
+                                                key={item.id}
+                                                item={item}
+                                                scrollToHeading={scrollToHeading}
+                                                activeId={activeId}
+                                            />
+                                        ))}
+                                    </ul>
                                 </div>
                             )}
                         </div>
-                    )}
+                    </aside>
 
-                    <div
-                        className="article-content"
-                        dangerouslySetInnerHTML={{ __html: contentHtml }}
-                    />
+                    {/* SAĞ SÜTUN */}
+                    <article className="museum-article">
+                        <div
+                            className="museum-article-content"
+                            dangerouslySetInnerHTML={{ __html: contentHtml }}
+                        />
 
-                    {relatedPosts.length > 0 && (
-                        <div className="related-posts-section">
-                            <h3 className="related-posts-title">Daha Fazlası</h3>
-                            <div className="related-posts-grid">
-                                {relatedPosts.map((relatedPost) => (
-                                    <PostCard key={relatedPost.id} post={relatedPost} />
-                                ))}
+                        {relatedPosts.length > 0 && (
+                            <div className="museum-related-section">
+                                <h3 className="museum-related-title">Curated Selection</h3>
+                                <div className="museum-related-grid">
+                                    {relatedPosts.map((relatedPost) => (
+                                        <PostCard key={relatedPost.id} post={relatedPost} />
+                                    ))}
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </article>
-            </div>
-        </main>
+                        )}
+                    </article>
+                </div>
+            </main>
+        </div>
     );
 }
